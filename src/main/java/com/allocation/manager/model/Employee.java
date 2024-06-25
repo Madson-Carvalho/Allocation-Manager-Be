@@ -2,6 +2,8 @@ package com.allocation.manager.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -26,6 +28,9 @@ public class Employee {
     private String qualification;
     @Column(length = 100)
     private String specializations;
+
+    @ManyToMany(mappedBy = "employees")
+    private List<Project> projects = new ArrayList<>();
 
     public UUID getEmployeeId() {
         return employeeId;
@@ -89,5 +94,13 @@ public class Employee {
 
     public void setSpecializations(String specializations) {
         this.specializations = specializations;
+    }
+
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
     }
 }
