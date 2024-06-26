@@ -1,6 +1,7 @@
 package com.allocation.manager.service;
 
 import com.allocation.manager.model.Employee;
+import com.allocation.manager.model.Project;
 import com.allocation.manager.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,12 @@ public class EmployeeService {
         existingEmployee.setQualification(employee.getQualification());
         existingEmployee.setWorkeHours(employee.getWorkeHours());
         existingEmployee.setSpecializations(employee.getSpecializations());
+
+        existingEmployee.getProjects().clear();
+        for (Project project : employee.getProjects()) {
+            existingEmployee.getProjects().add(project);
+        }
+
         return employeeRepository.save(existingEmployee);
     }
 

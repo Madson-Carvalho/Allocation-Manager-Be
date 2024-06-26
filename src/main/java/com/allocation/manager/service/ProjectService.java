@@ -28,7 +28,7 @@ public class ProjectService {
         existitingProject.setTotalProjectValue(project.getTotalProjectValue());
         existitingProject.setInitialDate(project.getInitialDate());
         existitingProject.setDeliveryDate(project.getDeliveryDate());
-
+        existitingProject.getEmployees().addAll(project.getEmployees());
         return repository.save(existitingProject);
     }
 

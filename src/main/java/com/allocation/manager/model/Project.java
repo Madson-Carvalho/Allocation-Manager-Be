@@ -2,7 +2,7 @@ package com.allocation.manager.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,16 +18,16 @@ public class Project {
     @Column(nullable = false, length = 100)
     private String name;
     @Column(nullable = false)
-    private LocalDateTime projectHours;
+    private Instant projectHours;
     @Column(nullable = false)
     private String projectCoordinator;
     @Column(nullable = false)
     private String fundingSource;
     private float totalProjectValue;
     @Column(nullable = false)
-    private LocalDateTime initialDate;
+    private Instant initialDate;
     @Column(nullable = false)
-    private LocalDateTime deliveryDate;
+    private Instant deliveryDate;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -53,11 +53,11 @@ public class Project {
         this.name = name;
     }
 
-    public LocalDateTime getProjectHours() {
+    public Instant getProjectHours() {
         return projectHours;
     }
 
-    public void setProjectHours(LocalDateTime projectHours) {
+    public void setProjectHours(Instant projectHours) {
         this.projectHours = projectHours;
     }
 
@@ -85,19 +85,19 @@ public class Project {
         this.totalProjectValue = totalProjectValue;
     }
 
-    public LocalDateTime getInitialDate() {
+    public Instant getInitialDate() {
         return initialDate;
     }
 
-    public void setInitialDate(LocalDateTime initialDate) {
+    public void setInitialDate(Instant initialDate) {
         this.initialDate = initialDate;
     }
 
-    public LocalDateTime getDeliveryDate() {
+    public Instant getDeliveryDate() {
         return deliveryDate;
     }
 
-    public void setDeliveryDate(LocalDateTime deliveryDate) {
+    public void setDeliveryDate(Instant deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
 
