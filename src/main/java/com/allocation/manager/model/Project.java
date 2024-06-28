@@ -21,7 +21,7 @@ public class Project {
     @Column(nullable = false, length = 100)
     private String name;
     @Column(nullable = false)
-    private Instant projectHours;
+    private float projectHours;
     @Column(nullable = false)
     private String projectCoordinator;
     @Column(nullable = false)
@@ -56,11 +56,11 @@ public class Project {
         this.name = name;
     }
 
-    public Instant getProjectHours() {
+    public float getProjectHours() {
         return projectHours;
     }
 
-    public void setProjectHours(Instant projectHours) {
+    public void setProjectHours(float projectHours) {
         this.projectHours = projectHours;
     }
 
