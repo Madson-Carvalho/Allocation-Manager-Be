@@ -1,5 +1,6 @@
 package com.allocation.manager.service;
 
+import com.allocation.manager.model.Employee;
 import com.allocation.manager.model.Project;
 import com.allocation.manager.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,12 @@ public class ProjectService {
         existitingProject.setTotalProjectValue(project.getTotalProjectValue());
         existitingProject.setInitialDate(project.getInitialDate());
         existitingProject.setDeliveryDate(project.getDeliveryDate());
-        existitingProject.getEmployees().addAll(project.getEmployees());
+
+        existitingProject.getEmployees().clear();
+        for (Employee employee : project.getEmployees()) {
+            existitingProject.getEmployees().add(employee);
+        }
+
         return repository.save(existitingProject);
     }
 
@@ -38,5 +44,9 @@ public class ProjectService {
 
     public List<Project> findAll() {
         return repository.findAll();
+    }
+
+    public Optional<Project> findById(UUID id) {
+        return repository.findById(id);
     }
 }

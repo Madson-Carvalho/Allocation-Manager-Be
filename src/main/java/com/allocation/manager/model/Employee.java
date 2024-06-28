@@ -1,5 +1,7 @@
 package com.allocation.manager.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "Employees")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "employeeId")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

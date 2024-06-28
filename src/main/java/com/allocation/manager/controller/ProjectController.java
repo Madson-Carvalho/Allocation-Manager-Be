@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -15,7 +16,7 @@ public class ProjectController {
     @Autowired
     private ProjectService service;
 
-    @PostMapping("/create-project")
+        @PostMapping("/create-project")
     public ResponseEntity<Project> createProject(@RequestBody Project project) {
         return ResponseEntity.ok(service.createProject(project));
     }
@@ -33,5 +34,10 @@ public class ProjectController {
     @GetMapping("/find-all")
     public List<Project> findAll() {
         return service.findAll();
+    }
+
+    @GetMapping("/find-by-id/{id}")
+    public Optional<Project> findById(@PathVariable UUID id) {
+            return service.findById(id);
     }
 }
