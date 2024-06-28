@@ -1,5 +1,7 @@
 package com.allocation.manager.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -9,6 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "Projects")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "projectId")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,7 +21,7 @@ public class Project {
     @Column(nullable = false, length = 100)
     private String name;
     @Column(nullable = false)
-    private Instant projectHours;
+    private float projectHours;
     @Column(nullable = false)
     private String projectCoordinator;
     @Column(nullable = false)
@@ -53,11 +56,11 @@ public class Project {
         this.name = name;
     }
 
-    public Instant getProjectHours() {
+    public float getProjectHours() {
         return projectHours;
     }
 
-    public void setProjectHours(Instant projectHours) {
+    public void setProjectHours(float projectHours) {
         this.projectHours = projectHours;
     }
 

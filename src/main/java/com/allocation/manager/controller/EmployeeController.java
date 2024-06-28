@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -33,5 +34,10 @@ public class EmployeeController {
     @GetMapping("/find-all")
     public List<Employee> findAll() {
         return service.findAll();
+    }
+
+    @GetMapping("/find-by-id/{id}")
+    public Optional<Employee> findById(@PathVariable UUID id) {
+        return service.findById(id);
     }
 }
