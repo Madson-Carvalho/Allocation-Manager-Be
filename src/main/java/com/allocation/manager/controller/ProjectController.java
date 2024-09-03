@@ -1,7 +1,8 @@
 package com.allocation.manager.controller;
 
 import com.allocation.manager.model.Project;
-import com.allocation.manager.service.ProjectService;
+import com.allocation.manager.service.IProjectService;
+import com.allocation.manager.service.impl.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("api/v1/projects")
 public class ProjectController {
     @Autowired
-    private ProjectService service;
+    private IProjectService service;
 
         @PostMapping("/create-project")
     public ResponseEntity<Project> createProject(@RequestBody Project project) {

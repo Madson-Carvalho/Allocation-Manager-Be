@@ -1,7 +1,7 @@
 package com.allocation.manager.controller;
 
 import com.allocation.manager.model.Employee;
-import com.allocation.manager.service.EmployeeService;
+import com.allocation.manager.service.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @RequestMapping("api/v1/employees")
 public class EmployeeController {
     @Autowired
-    private EmployeeService service;
+    private IEmployeeService service;
 
     @PostMapping("/create-employee")
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {

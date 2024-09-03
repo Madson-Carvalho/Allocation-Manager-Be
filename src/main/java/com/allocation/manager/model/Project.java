@@ -32,13 +32,13 @@ public class Project {
     @Column(nullable = false)
     private Instant deliveryDate;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "project_employee",
-            joinColumns = @JoinColumn(name = "projectId"),
-            inverseJoinColumns = @JoinColumn(name = "employeeId")
-    )
-    private List<Employee> employees = new ArrayList<>();
+//    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @JoinTable(
+//            name = "project_employee",
+//            joinColumns = @JoinColumn(name = "projectId"),
+//            inverseJoinColumns = @JoinColumn(name = "employeeId")
+//    )
+//    private List<Employee> employees = new ArrayList<>();
 
     public UUID getProjectId() {
         return projectId;
@@ -104,11 +104,11 @@ public class Project {
         this.deliveryDate = deliveryDate;
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
+//    public List<Employee> getEmployees() {
+//        return employees;
+//    }
+//
+//    public void setEmployees(List<Employee> employees) {
+//        this.employees = employees;
+//    }
 }

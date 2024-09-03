@@ -32,8 +32,8 @@ public class Employee {
     @Column(length = 100)
     private String specializations;
 
-    @ManyToMany(mappedBy = "employees")
-    private List<Project> projects = new ArrayList<>();
+//    @ManyToMany(mappedBy = "employees")
+//    private List<Project> projects = new ArrayList<>();
 
     public UUID getEmployeeId() {
         return employeeId;
@@ -99,11 +99,11 @@ public class Employee {
         this.specializations = specializations;
     }
 
-    public List<Project> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(List<Project> projects) {
-        this.projects = projects;
-    }
+//    public List<Project> getProjects() {
+//        return projects;
+//    }
+//
+//    public void setProjects(List<Project> projects) {
+//        this.projects = projects;
+//    }
 }
