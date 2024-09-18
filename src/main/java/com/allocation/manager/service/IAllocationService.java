@@ -1,8 +1,9 @@
 package com.allocation.manager.service;
 
 import java.util.Date;
+import java.util.UUID;
 
 public interface IAllocationService {
-    void allocationEmployeeWithProject(long employeeId, long projectId, Date startDate, Date endDate);
-    boolean isEmployeeAllocatedToProject(long employeeId, Date startDate, Date endDate);
+    void allocationEmployeeWithProject(UUID employeeId, UUID projectId, Date startDate, Date endDate);
+    boolean isEmployeeAllocatedToProject(UUID employeeId, Date startDate, Date endDate);
 }

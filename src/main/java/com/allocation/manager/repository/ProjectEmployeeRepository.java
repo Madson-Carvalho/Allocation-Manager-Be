@@ -12,8 +12,8 @@ import java.util.UUID;
 @Repository
 public interface ProjectEmployeeRepository extends JpaRepository<ProjectEmployee, UUID> {
 
-    @Query("SELECT COUNT(pe) > 0 FROM ProjectEmployee pe WHERE pe.EmployeeId = :employeeId AND (pe.startDate < :endDate AND pe.endDate > :startDate)")
-    boolean isEmployeeAllocatedDuringPeriod(@Param("employeeId") Long employeeId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    @Query("SELECT COUNT(pe) > 0 FROM ProjectEmployee pe WHERE pe.employee.employeeId = :employeeId AND (pe.startDate < :endDate AND pe.endDate > :startDate)")
+    boolean isEmployeeAllocatedDuringPeriod(@Param("employeeId") UUID employeeId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
 
 }

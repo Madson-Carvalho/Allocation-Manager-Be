@@ -3,6 +3,7 @@ package com.allocation.manager.model;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "project_employee")
@@ -12,11 +13,13 @@ public class ProjectEmployee {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)
-    private long ProjectId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
-    @Column(nullable = false)
-    private long EmployeeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 
     @Column(nullable = false)
     private Date startDate;
@@ -24,20 +27,28 @@ public class ProjectEmployee {
     @Column(nullable = false)
     private Date endDate;
 
-    public long getProjectId() {
-        return ProjectId;
+    public Project getProject() {
+        return project;
     }
 
-    public void setProjectId(long projectId) {
-        ProjectId = projectId;
+    public void setProject(Project project) {
+        this.project = project;
     }
 
-    public long getEmployeeId() {
-        return EmployeeId;
+    public Long getId() {
+        return id;
     }
 
-    public void setEmployeeId(long employeeId) {
-        EmployeeId = employeeId;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public Date getStartDate() {
@@ -54,9 +65,5 @@ public class ProjectEmployee {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
-    }
-
-    public Long getId() {
-        return id;
     }
 }
