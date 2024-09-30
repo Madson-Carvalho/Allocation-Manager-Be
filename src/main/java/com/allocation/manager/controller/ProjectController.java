@@ -1,8 +1,9 @@
 package com.allocation.manager.controller;
 
+import com.allocation.manager.controller.routes.Routes;
 import com.allocation.manager.model.Project;
 import com.allocation.manager.service.IProjectService;
-import com.allocation.manager.service.impl.ProjectService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,31 +14,32 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/projects")
+@Tag(name = "Project Controller", description = "Operações de CRUD para Project")
 public class ProjectController {
     @Autowired
     private IProjectService service;
 
-        @PostMapping("/create-project")
+    @PostMapping(Routes.CreateProject)
     public ResponseEntity<Project> createProject(@RequestBody Project project) {
         return ResponseEntity.ok(service.createProject(project));
     }
 
-    @PutMapping("/update-project")
+    @PutMapping(Routes.UpdateProject)
     public ResponseEntity<Project> updatePrject(@RequestBody Project project) {
         return ResponseEntity.ok(service.updateProject(project));
     }
 
-    @DeleteMapping("/delete-project/{id}")
+    @DeleteMapping(Routes.DeleteProject)
     public void deleteProject(@PathVariable UUID id) {
         service.deleteProject(id);
     }
 
-    @GetMapping("/find-all")
+    @GetMapping(Routes.FindAllProjects)
     public List<Project> findAll() {
         return service.findAll();
     }
 
-    @GetMapping("/find-by-id/{id}")
+    @GetMapping(Routes.FindProjectById)
     public Optional<Project> findById(@PathVariable UUID id) {
             return service.findById(id);
     }

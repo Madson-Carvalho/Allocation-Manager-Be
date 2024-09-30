@@ -1,7 +1,9 @@
 package com.allocation.manager.controller;
 
+import com.allocation.manager.controller.routes.Routes;
 import com.allocation.manager.model.Employee;
 import com.allocation.manager.service.IEmployeeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,31 +14,32 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/employees")
+@Tag(name = "Employee Controller", description = "Operações de CRUD para Employee")
 class EmployeeController {
     @Autowired
     private IEmployeeService service;
 
-    @PostMapping("/create-employee")
+    @PostMapping(Routes.CreateEmployee)
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
         return ResponseEntity.ok(service.createEmployee(employee));
     }
 
-    @PutMapping("/update-employee")
+    @PutMapping(Routes.UpdateEmployee)
     public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee) {
         return ResponseEntity.ok(service.updateEmployee(employee));
     }
 
-    @DeleteMapping("/delete-employee/{id}")
+    @DeleteMapping(Routes.DeleteEmployee)
     public void deleteEmployee(@PathVariable UUID id) {
         service.deleteEmployee(id);
     }
 
-    @GetMapping("/find-all")
+    @GetMapping(Routes.FindAllEmployees)
     public List<Employee> findAll() {
         return service.findAll();
     }
 
-    @GetMapping("/find-by-id/{id}")
+    @GetMapping(Routes.FindEmployeeById)
     public Optional<Employee> findById(@PathVariable UUID id) {
         return service.findById(id);
     }
