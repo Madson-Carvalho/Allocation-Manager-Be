@@ -3,7 +3,6 @@ package com.allocation.manager.controller;
 import com.allocation.manager.controller.routes.Routes;
 import com.allocation.manager.model.Employee;
 import com.allocation.manager.service.IEmployeeService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/employees")
-@Tag(name = "Employee Controller", description = "Operações de CRUD para Employee")
 class EmployeeController {
     @Autowired
     private IEmployeeService service;

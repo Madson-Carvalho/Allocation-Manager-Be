@@ -3,7 +3,6 @@ package com.allocation.manager.controller;
 import com.allocation.manager.controller.routes.Routes;
 import com.allocation.manager.model.Project;
 import com.allocation.manager.service.IProjectService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/projects")
-@Tag(name = "Project Controller", description = "Operações de CRUD para Project")
 public class ProjectController {
     @Autowired
     private IProjectService service;
