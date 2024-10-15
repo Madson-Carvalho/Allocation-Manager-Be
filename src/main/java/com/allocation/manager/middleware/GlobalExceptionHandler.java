@@ -1,6 +1,6 @@
 package com.allocation.manager.middleware;
 
-import com.allocation.manager.model.ErrorResponse;
+import com.allocation.manager.model.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

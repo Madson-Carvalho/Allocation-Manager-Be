@@ -1,4 +1,4 @@
-package com.allocation.manager.model;
+package com.allocation.manager.model.response;
 
 public class ErrorResponse {
 

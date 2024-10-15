@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -31,14 +29,6 @@ public class Project {
     private Instant initialDate;
     @Column(nullable = false)
     private Instant deliveryDate;
-
-//    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//    @JoinTable(
-//            name = "project_employee",
-//            joinColumns = @JoinColumn(name = "projectId"),
-//            inverseJoinColumns = @JoinColumn(name = "employeeId")
-//    )
-//    private List<Employee> employees = new ArrayList<>();
 
     public UUID getProjectId() {
         return projectId;
@@ -103,12 +93,4 @@ public class Project {
     public void setDeliveryDate(Instant deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
-
-//    public List<Employee> getEmployees() {
-//        return employees;
-//    }
-//
-//    public void setEmployees(List<Employee> employees) {
-//        this.employees = employees;
-//    }
 }

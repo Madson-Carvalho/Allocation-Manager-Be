@@ -6,14 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Repository
 public interface ProjectEmployeeRepository extends JpaRepository<ProjectEmployee, UUID> {
 
     @Query("SELECT COUNT(pe) > 0 FROM ProjectEmployee pe WHERE pe.employee.employeeId = :employeeId AND (pe.startDate < :endDate AND pe.endDate > :startDate)")
-    boolean isEmployeeAllocatedDuringPeriod(@Param("employeeId") UUID employeeId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    boolean isEmployeeAllocatedDuringPeriod(@Param("employeeId") UUID employeeId, @Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
 
 
 }

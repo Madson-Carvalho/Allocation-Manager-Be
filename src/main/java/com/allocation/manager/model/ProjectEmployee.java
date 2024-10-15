@@ -2,7 +2,7 @@ package com.allocation.manager.model;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -11,7 +11,8 @@ public class ProjectEmployee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(unique = true, nullable = false)
+    private UUID projectEmployteeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
@@ -22,10 +23,19 @@ public class ProjectEmployee {
     private Employee employee;
 
     @Column(nullable = false)
-    private Date startDate;
+    private Instant startDate;
 
     @Column(nullable = false)
-    private Date endDate;
+    private Instant endDate;
+
+    public ProjectEmployee( Project project,  Employee employee, Instant startDate, Instant endDate) {
+        this.project = project;
+        this.employee = employee;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public ProjectEmployee() {}
 
     public Project getProject() {
         return project;
@@ -35,12 +45,12 @@ public class ProjectEmployee {
         this.project = project;
     }
 
-    public Long getId() {
-        return id;
+    public UUID getId() {
+        return projectEmployteeId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(UUID id) {
+        this.projectEmployteeId = id;
     }
 
     public Employee getEmployee() {
@@ -51,19 +61,19 @@ public class ProjectEmployee {
         this.employee = employee;
     }
 
-    public Date getStartDate() {
+    public Instant getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Instant startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public Instant getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Instant endDate) {
         this.endDate = endDate;
     }
 }

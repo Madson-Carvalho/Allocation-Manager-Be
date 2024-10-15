@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 
@@ -19,13 +19,12 @@ public class AllocationController {
     private IAllocationService service;
 
     @PostMapping(Routes.AllocationEmployeeInProject)
-    public ResponseEntity<Void> allocatedEmployeeInProject(@PathVariable UUID employeeId,
-                                                                      @PathVariable UUID projectId,
-                                                                      @PathVariable Date startDate,
-                                                                      @PathVariable Date endDate)
-    {
-        service.allocationEmployeeWithProject(employeeId, projectId, startDate, endDate);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Void> allocatedEmployeeInProject(@PathVariable UUID employeeId, @PathVariable UUID projectId, @PathVariable Instant startDate, @PathVariable Instant endDate) {
+        try {
+            service.allocationEmployeeWithProject(employeeId, projectId, startDate, endDate);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
-
 }

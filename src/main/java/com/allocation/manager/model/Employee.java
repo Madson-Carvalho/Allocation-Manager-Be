@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,26 +19,23 @@ public class Employee {
     private String name;
     @Column(nullable = false, length = 50)
     private String email;
-    @Column(nullable = false, length = 50)
-    private double workeHours;
+
+    //Será utilizado segundos para armazenar a quantidade de horas do colaborador
+    @Column(nullable = false)
+    private long workInSeconds;
+
     @Column(nullable = false, length = 50)
     private String jobRole;
-    @Column()
+    @Column(nullable = false)
     private double wage;
     @Column(length = 50)
     private String qualification;
     @Column(length = 100)
     private String specializations;
 
-//    @ManyToMany(mappedBy = "employees")
-//    private List<Project> projects = new ArrayList<>();
-
+    //region gets and setters
     public UUID getEmployeeId() {
         return employeeId;
-    }
-
-    public void setEmployeeId(UUID employeeId) {
-        this.employeeId = employeeId;
     }
 
     public String getName() {
@@ -59,12 +54,12 @@ public class Employee {
         this.email = email;
     }
 
-    public double getWorkeHours() {
-        return workeHours;
+    public long getWorkInSeconds() {
+        return workInSeconds;
     }
 
-    public void setWorkeHours(double workeHours) {
-        this.workeHours = workeHours;
+    public void setWorkInSeconds(long workeHours) {
+        this.workInSeconds = workeHours;
     }
 
     public String getJobRole() {
@@ -98,12 +93,10 @@ public class Employee {
     public void setSpecializations(String specializations) {
         this.specializations = specializations;
     }
+    //endregion gets and setters
 
-//    public List<Project> getProjects() {
-//        return projects;
-//    }
-//
-//    public void setProjects(List<Project> projects) {
-//        this.projects = projects;
-//    }
+    public boolean verifyHoursDisponible(long requestInSeconds){
+        return getWorkInSeconds() < requestInSeconds;
+    }
+
 }

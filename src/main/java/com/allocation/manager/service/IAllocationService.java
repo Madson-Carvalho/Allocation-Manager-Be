@@ -1,9 +1,12 @@
 package com.allocation.manager.service;
 
-import java.util.Date;
+import com.allocation.manager.exceptions.EmployeeAllocatedException;
+import com.allocation.manager.exceptions.InsufficientWorkHoursException;
+
+import java.time.Instant;
 import java.util.UUID;
 
 public interface IAllocationService {
-    void allocationEmployeeWithProject(UUID employeeId, UUID projectId, Date startDate, Date endDate);
-    boolean isEmployeeAllocatedToProject(UUID employeeId, Date startDate, Date endDate);
+    void allocationEmployeeWithProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate) throws EmployeeAllocatedException, InsufficientWorkHoursException;
+    boolean isEmployeeAllocatedToProject(UUID employeeId, Instant startDate, Instant endDate);
 }
