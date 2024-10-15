@@ -54,6 +54,47 @@ public class AllocationService implements IAllocationService {
     }
 
     @Override
+    public void updateEmployeeAllocation(UUID employeeId, UUID projectId, Instant startDate, Instant endDate) throws EmployeeAllocatedException, InsufficientWorkHoursException {
+
+        String messageErrorProject = "Projeto não encontrado com o ID: " + projectId;
+        checkNotNullOrThrowEntityNotFound(projectRepository.findByUuid(projectId), messageErrorProject);
+
+        String messageErrorEmployee = "Colaborador não encontrado com o ID: " + employeeId;
+        var employee = checkNotNullOrThrowEntityNotFound(employeeRepository.findByUuid(employeeId), messageErrorEmployee);
+
+        String messageErrorProjectEmployee = "Não há colaborador ID" + employeeId + "Alocado no projeto ID:" + projectId;
+        var projectEmployee = checkNotNullOrThrowEntityNotFound(projectEmployeeRepository.findByEmployeeIdAndProjectId(employeeId, projectId), messageErrorProjectEmployee);
+
+        boolean isSameProject = projectEmployee.getProject().getProjectId().equals(projectId);
+
+        if(isSameProject){
+        }
+        else{
+            boolean isAllocated = isEmployeeAllocatedToProject(employeeId, startDate, endDate);
+            if (isAllocated) {
+                throw new EmployeeAllocatedException("O funcionário já está alocado em outro projeto durante este período.");
+            }
+        }
+
+        long newRequestInSeconds = Duration.between(startDate, endDate).getSeconds();
+        long currentAllocationInSeconds = Duration.between(projectEmployee.getStartDate(), projectEmployee.getEndDate()).getSeconds();
+
+        long additionalTimeRequired = newRequestInSeconds - currentAllocationInSeconds;
+
+        if (employee.verifyHoursDisponible(additionalTimeRequired)) {
+            throw new InsufficientWorkHoursException("O colaborador não contém horas disponíveis suficientes para a nova alocação.");
+        }
+
+        projectEmployee.setStartDate(startDate);
+        projectEmployee.setEndDate(endDate);
+        projectEmployeeRepository.save(projectEmployee);
+
+        employee.setWorkInSeconds(employee.getWorkInSeconds() - additionalTimeRequired);
+        employeeRepository.save(employee);
+    }
+
+
+    @Override
     public boolean isEmployeeAllocatedToProject(UUID employeeId, Instant startDate, Instant endDate) {
         try {
             return projectEmployeeRepository.isEmployeeAllocatedDuringPeriod(employeeId, startDate, endDate);

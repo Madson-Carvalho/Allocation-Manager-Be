@@ -15,5 +15,6 @@ public interface ProjectEmployeeRepository extends JpaRepository<ProjectEmployee
     @Query("SELECT COUNT(pe) > 0 FROM ProjectEmployee pe WHERE pe.employee.employeeId = :employeeId AND (pe.startDate < :endDate AND pe.endDate > :startDate)")
     boolean isEmployeeAllocatedDuringPeriod(@Param("employeeId") UUID employeeId, @Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
 
-
+    @Query("SELECT pe FROM ProjectEmployee pe WHERE pe.employee.employeeId = :employeeId AND pe.project.projectId = :projectId")
+    ProjectEmployee findByEmployeeIdAndProjectId(@Param("employeeId") UUID employeeId, @Param("projectId") UUID projectId);
 }

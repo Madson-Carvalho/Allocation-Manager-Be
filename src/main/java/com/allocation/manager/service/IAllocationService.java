@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface IAllocationService {
     void allocationEmployeeWithProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate) throws EmployeeAllocatedException, InsufficientWorkHoursException;
     boolean isEmployeeAllocatedToProject(UUID employeeId, Instant startDate, Instant endDate);
+    void updateEmployeeAllocation(UUID employeeId, UUID projectId, Instant startDate, Instant endDate) throws EmployeeAllocatedException, InsufficientWorkHoursException;
 }
