@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import static com.allocation.manager.util.ValidationUtil.checkNotNullOrThrowEntityNotFound;
@@ -93,7 +94,6 @@ public class AllocationService implements IAllocationService {
         employeeRepository.save(employee);
     }
 
-
     @Override
     public boolean isEmployeeAllocatedToProject(UUID employeeId, Instant startDate, Instant endDate) {
         try {
@@ -102,5 +102,10 @@ public class AllocationService implements IAllocationService {
             System.out.println(e.getMessage());
         }
         return false;
+    }
+
+    @Override
+    public List<ProjectEmployee> findAllEmployeeInProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate) {
+        return projectEmployeeRepository.findAllEmployeeInProject(employeeId, projectId, startDate, endDate);
     }
 }
