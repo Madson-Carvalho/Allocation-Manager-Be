@@ -7,6 +7,9 @@ public class Routes {
     public static final String DeallocateEmployeeTheProject = "/deallocate-employee/{employeeId}/in/project/{projectId}/{startDate}/{endDate}";
     public static final String FindProjectsByEmployeeId = "/find-projects-by-employee/{employeeId}";
     public static final String FindAllProjectsEmployees = "/find-all" ;
+
+    public static final String UpdateAllocationsEmployeesWithProjects = "/update-allocations-employees-with-projects";
+    public static final String UpdateAllocationEmployeeWithProject = "/update-allocation-employee-with-project";
     //endregion
 
     //region Employee Routes
