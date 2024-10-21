@@ -1,5 +1,6 @@
 package com.allocation.manager.model;
 
+import com.allocation.manager.exceptions.InsufficientWorkHoursException;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -95,8 +96,10 @@ public class Employee {
     }
     //endregion gets and setters
 
-    public boolean verifyHoursDisponible(long requestInSeconds){
-        return getWorkInSeconds() < requestInSeconds;
+    public void verifyHoursDisponible(long requestInSeconds){
+        if(getWorkInSeconds() < requestInSeconds){
+            throw new InsufficientWorkHoursException("O colaborador não contém horas disponíveis suficientes para a nova alocação.");
+        }
     }
 
 }

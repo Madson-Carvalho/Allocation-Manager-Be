@@ -1,7 +1,6 @@
 package com.allocation.manager.service.impl;
 
 import com.allocation.manager.exceptions.EmployeeAllocatedException;
-import com.allocation.manager.exceptions.InsufficientWorkHoursException;
 import com.allocation.manager.model.Employee;
 import com.allocation.manager.model.ProjectEmployee;
 import com.allocation.manager.repository.EmployeeRepository;
@@ -11,13 +10,14 @@ import com.allocation.manager.service.IAllocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.allocation.manager.util.FormatDataUtil.formatInstantDateTime;
 import static com.allocation.manager.util.ValidationUtil.checkNotNullOrThrowEntityNotFound;
+import static java.time.Duration.between;
 
 @Service
 public class AllocationService implements IAllocationService {
@@ -34,19 +34,19 @@ public class AllocationService implements IAllocationService {
     @Override
     public void allocationEmployeeWithProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate) {
 
-        boolean isAllocated = isEmployeeAllocatedToProject(employeeId, startDate, endDate);
-        if (isAllocated)
-            throw new EmployeeAllocatedException("O funcionário já está alocado em outro projeto durante este período.");
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("A data de início não pode ser posterior à data de término.");
+        }
 
-        String messageErrorProject = "Projeto não encontrado com o ID: " + projectId;
-        var project = checkNotNullOrThrowEntityNotFound(projectRepository.findByUuid(projectId), messageErrorProject);
+        verifyIsEmployeeAllocatedToProject(projectId, employeeId, startDate, endDate);
 
-        String messageErrorEmployee = "Colaborador não encontrado com o ID: " + employeeId;
-        var employee = checkNotNullOrThrowEntityNotFound(employeeRepository.findByUuid(employeeId), messageErrorEmployee);
+        var project = checkNotNullOrThrowEntityNotFound(projectRepository.findByUuid(projectId), "Projeto não encontrado com o ID: " + projectId);
+        var employee = checkNotNullOrThrowEntityNotFound(employeeRepository.findByUuid(employeeId), "Colaborador não encontrado com o ID: " + employeeId);
 
-        long requestInSeconds = Duration.between(startDate, endDate).getSeconds();
-        if (employee.verifyHoursDisponible(requestInSeconds))
-            throw new InsufficientWorkHoursException("O colaborador não contém horas disponiveis para a alocação neste projeto");
+        long requestInSeconds = between(startDate, endDate).getSeconds();
+
+        employee.verifyHoursDisponible(requestInSeconds);
+        project.verifyProjectValidity(requestInSeconds);
 
         ProjectEmployee projectEmployee = new ProjectEmployee(project, employee, startDate, endDate);
         projectEmployeeRepository.save(projectEmployee);
@@ -60,25 +60,27 @@ public class AllocationService implements IAllocationService {
         var newEmployees = new ArrayList<Employee>();
 
         for (ProjectEmployee pe : projectsEmployees) {
-
             var project = pe.getProject();
             var employee = pe.getEmployee();
             var startDate = pe.getStartDate();
             var endDate = pe.getEndDate();
 
+            if (startDate.isAfter(endDate)) {
+                throw new IllegalArgumentException("A data de início não pode ser posterior à data de término.");
+            }
+
             var oldProjectEmployee = checkNotNullOrThrowEntityNotFound(projectEmployeeRepository.findByEmployeeIdAndProjectId(
                     employee.getEmployeeId(), project.getProjectId()), "Não há colaborador ID" + employee.getEmployeeId() + "Alocado no projeto ID:" + project.getProjectId()
             );
 
-            long newRequestInSeconds = Duration.between(startDate, endDate).getSeconds();
+            long newRequestInSeconds = between(startDate, endDate).getSeconds();
 
-            verifyIsEmployeeAllocatedToProject(employee.getEmployeeId(), startDate, endDate);
+            verifyIsEmployeeAllocatedToProject(project.getProjectId(), employee.getEmployeeId(), startDate, endDate);
 
-            long currentAllocationInSeconds = Duration.between(oldProjectEmployee.getStartDate(), oldProjectEmployee.getEndDate()).getSeconds();
+            long currentAllocationInSeconds = between(oldProjectEmployee.getStartDate(), oldProjectEmployee.getEndDate()).getSeconds();
             employee.setWorkInSeconds(employee.getWorkInSeconds() + currentAllocationInSeconds);
 
-            if (employee.verifyHoursDisponible(newRequestInSeconds))
-                throw new InsufficientWorkHoursException("O colaborador não contém horas disponíveis suficientes para a nova alocação.");
+            employee.verifyHoursDisponible(newRequestInSeconds);
 
             newEmployees.add(employee);
         }
@@ -92,13 +94,15 @@ public class AllocationService implements IAllocationService {
         return projectEmployeeRepository.findAllEmployeeInProject(employeeId, projectId, startDate, endDate);
     }
 
-    private boolean isEmployeeAllocatedToProject(UUID employeeId, Instant startDate, Instant endDate) {
-        return projectEmployeeRepository.isEmployeeAllocatedDuringPeriod(employeeId, startDate, endDate);
-    }
+    private void verifyIsEmployeeAllocatedToProject(UUID projectId, UUID employeeId, Instant startDate, Instant endDate) {
+        var allocation = projectEmployeeRepository.findAllEmployeeInProject(employeeId, null, startDate, endDate)
+                .stream()
+                .findFirst()
+                .orElse(null);
 
-    private void verifyIsEmployeeAllocatedToProject(UUID employeeId, Instant startDate, Instant endDate) {
-        boolean isAllocated = isEmployeeAllocatedToProject(employeeId, startDate, endDate);
-        if (isAllocated)
-            throw new EmployeeAllocatedException("O funcionário já está alocado em outro projeto durante este período.");
+        if (allocation != null && !allocation.getProject().getProjectId().equals(projectId))
+            throw new EmployeeAllocatedException("O funcionário já está alocado no projeto "
+                    + allocation.getProject().getName() + " durante o período de: "
+                    + formatInstantDateTime(allocation.getStartDate()) + " à " + formatInstantDateTime(allocation.getEndDate()));
     }
 }

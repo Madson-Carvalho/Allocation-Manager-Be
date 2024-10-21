@@ -1,11 +1,15 @@
 package com.allocation.manager.model;
 
+import com.allocation.manager.exceptions.InsufficientWorkHoursException;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.Instant;
 import java.util.UUID;
+
+import static com.allocation.manager.util.FormatDataUtil.formatInstantDateTime;
+import static java.time.Duration.between;
 
 @Entity
 @Table(name = "Projects")
@@ -92,5 +96,14 @@ public class Project {
 
     public void setDeliveryDate(Instant deliveryDate) {
         this.deliveryDate = deliveryDate;
+    }
+
+    public void verifyProjectValidity(long requestAllocationInSeconds){
+        var tempProjectInSeconds = between(this.getInitialDate(), this.getDeliveryDate()).getSeconds();
+        if(requestAllocationInSeconds > tempProjectInSeconds){
+            throw new InsufficientWorkHoursException(
+                    "O Projeto esta vigente apenas entre o período: "
+                            + formatInstantDateTime(this.getInitialDate()) + " à " + formatInstantDateTime(this.getDeliveryDate()));
+        }
     }
 }
