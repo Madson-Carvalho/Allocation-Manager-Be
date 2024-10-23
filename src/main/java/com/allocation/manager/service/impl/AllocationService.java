@@ -94,6 +94,12 @@ public class AllocationService implements IAllocationService {
         return projectEmployeeRepository.findAllEmployeeInProject(employeeId, projectId, startDate, endDate);
     }
 
+    @Override
+    public void deleteProjectEmployee(ProjectEmployee projectEmployee) {
+        resetEmployeeWorkingHours(projectEmployee);
+        projectEmployeeRepository.delete(projectEmployee);
+    }
+
     private void verifyIsEmployeeAllocatedToProject(UUID projectId, UUID employeeId, Instant startDate, Instant endDate) {
         var allocation = projectEmployeeRepository.findAllEmployeeInProject(employeeId, null, startDate, endDate)
                 .stream()
@@ -104,5 +110,16 @@ public class AllocationService implements IAllocationService {
             throw new EmployeeAllocatedException("O funcionário já está alocado no projeto "
                     + allocation.getProject().getName() + " durante o período de: "
                     + formatInstantDateTime(allocation.getStartDate()) + " à " + formatInstantDateTime(allocation.getEndDate()));
+    }
+
+    private void resetEmployeeWorkingHours(ProjectEmployee projectEmployee) {
+        var startDate = projectEmployee.getStartDate();
+        var endDate = projectEmployee.getEndDate();
+
+        long requestInSeconds = between(startDate, endDate).getSeconds();
+        var employee = projectEmployee.getEmployee();
+
+        employee.setWorkInSeconds(employee.getWorkInSeconds() + requestInSeconds);
+        employeeRepository.save(employee);
     }
 }
