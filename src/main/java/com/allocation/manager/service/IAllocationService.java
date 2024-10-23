@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IAllocationService {
-    void allocationEmployeeWithProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate);
+    void allocateEmployeeInProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate);
 
     List<ProjectEmployee> findAllEmployeeInProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate);
 
-    void updateAllocationsEmployeesWithProjects(List<ProjectEmployee> projectsEmployees);
+    void updateAllocationsEmployeesInProjects(List<ProjectEmployee> projectsEmployees);
 
     void deleteProjectEmployee(ProjectEmployee projectEmployee);
 }

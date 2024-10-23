@@ -13,16 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 @RestController
 @RequestMapping("api/v1/allocation")
 public class AllocationController {
     @Autowired
     private IAllocationService service;
 
-    @PostMapping(Routes.AllocationEmployeeInProject)
-    public ResponseEntity<Void> allocatedEmployeeInProject(@PathVariable UUID employeeId, @PathVariable UUID projectId, @PathVariable Instant startDate, @PathVariable Instant endDate) {
-        service.allocationEmployeeWithProject(employeeId, projectId, startDate, endDate);
+    @PostMapping(Routes.AllocateEmployeeInProject)
+    public ResponseEntity<Void> allocateEmployeeInProject(@PathVariable UUID employeeId, @PathVariable UUID projectId, @PathVariable Instant startDate, @PathVariable Instant endDate) {
+        service.allocateEmployeeInProject(employeeId, projectId, startDate, endDate);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -32,14 +31,14 @@ public class AllocationController {
     }
 
     @PutMapping(Routes.UpdateAllocationsEmployeesWithProjects)
-    public ResponseEntity<Void> updateAllocationsEmployeesWithProjects(@RequestBody List<ProjectEmployee> projectsEmployees) {
-        service.updateAllocationsEmployeesWithProjects(projectsEmployees);
+    public ResponseEntity<Void> updateAllocationsEmployeesInProjects(@RequestBody List<ProjectEmployee> projectsEmployees) {
+        service.updateAllocationsEmployeesInProjects(projectsEmployees);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PutMapping(Routes.UpdateAllocationEmployeeWithProject)
-    public ResponseEntity<Void> updateAllocationEmployeeWithProject(@RequestBody ProjectEmployee projectsEmployees) {
-        service.updateAllocationsEmployeesWithProjects(new ArrayList<>(new ArrayList<>(){{add(projectsEmployees);}}));
+    public ResponseEntity<Void> updateAllocationEmployeeInProject(@RequestBody ProjectEmployee projectsEmployees) {
+        service.updateAllocationsEmployeesInProjects(new ArrayList<>(new ArrayList<>(){{add(projectsEmployees);}}));
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 

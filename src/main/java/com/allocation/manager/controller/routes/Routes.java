@@ -3,10 +3,9 @@ package com.allocation.manager.controller.routes;
 public class Routes {
 
     //region Allocation Employee In Project Routes
-    public static final String AllocationEmployeeInProject = "/allocated-employee/{employeeId}/in/project/{projectId}/{startDate}/{endDate}";
+    public static final String AllocateEmployeeInProject = "/allocate-employee/{employeeId}/in/project/{projectId}/{startDate}/{endDate}";
     public static final String DeallocateEmployeeTheProject = "/deallocate-employee-the-project";
     public static final String FindAllProjectsEmployees = "/find-all" ;
-
     public static final String UpdateAllocationsEmployeesWithProjects = "/update-allocations-employees-with-projects";
     public static final String UpdateAllocationEmployeeWithProject = "/update-allocation-employee-with-project";
     //endregion

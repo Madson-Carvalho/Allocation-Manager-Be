@@ -32,7 +32,7 @@ public class AllocationService implements IAllocationService {
     private EmployeeRepository employeeRepository;
 
     @Override
-    public void allocationEmployeeWithProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate) {
+    public void allocateEmployeeInProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate) {
 
         if (startDate.isAfter(endDate)) {
             throw new IllegalArgumentException("A data de início não pode ser posterior à data de término.");
@@ -56,7 +56,7 @@ public class AllocationService implements IAllocationService {
     }
 
     @Override
-    public void updateAllocationsEmployeesWithProjects(List<ProjectEmployee> projectsEmployees) {
+    public void updateAllocationsEmployeesInProjects(List<ProjectEmployee> projectsEmployees) {
         var newEmployees = new ArrayList<Employee>();
 
         for (ProjectEmployee pe : projectsEmployees) {
