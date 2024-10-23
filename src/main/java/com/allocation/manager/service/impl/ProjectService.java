@@ -33,11 +33,6 @@ public class ProjectService implements IProjectService {
         existitingProject.setInitialDate(project.getInitialDate());
         existitingProject.setDeliveryDate(project.getDeliveryDate());
 
-//        existitingProject.getEmployees().clear();
-//        for (Employee employee : project.getEmployees()) {
-//            existitingProject.getEmployees().add(employee);
-//        }
-
         return repository.save(existitingProject);
     }
 

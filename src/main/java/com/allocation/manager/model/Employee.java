@@ -21,7 +21,6 @@ public class Employee {
     @Column(nullable = false, length = 50)
     private String email;
 
-    //Será utilizado segundos para armazenar a quantidade de horas do colaborador
     @Column(nullable = false)
     private long workInSeconds;
 
@@ -34,7 +33,6 @@ public class Employee {
     @Column(length = 100)
     private String specializations;
 
-    //region gets and setters
     public UUID getEmployeeId() {
         return employeeId;
     }
@@ -94,7 +92,6 @@ public class Employee {
     public void setSpecializations(String specializations) {
         this.specializations = specializations;
     }
-    //endregion gets and setters
 
     public void verifyHoursDisponible(long requestInSeconds){
         if(getWorkInSeconds() < requestInSeconds){
