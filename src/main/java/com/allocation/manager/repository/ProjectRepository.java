@@ -11,5 +11,5 @@ import java.util.UUID;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
     @Query("SELECT e FROM Project e WHERE e.projectId = ?1")
-    Employee findByUuid(UUID uuid);
+    Project findByUuid(UUID uuid);
 }

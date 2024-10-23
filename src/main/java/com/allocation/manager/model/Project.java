@@ -1,13 +1,15 @@
 package com.allocation.manager.model;
 
+import com.allocation.manager.exceptions.InsufficientWorkHoursException;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+
+import static com.allocation.manager.util.FormatDataUtil.formatInstantDateTime;
+import static java.time.Duration.between;
 
 @Entity
 @Table(name = "Projects")
@@ -31,14 +33,6 @@ public class Project {
     private Instant initialDate;
     @Column(nullable = false)
     private Instant deliveryDate;
-
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "project_employee",
-            joinColumns = @JoinColumn(name = "projectId"),
-            inverseJoinColumns = @JoinColumn(name = "employeeId")
-    )
-    private List<Employee> employees = new ArrayList<>();
 
     public UUID getProjectId() {
         return projectId;
@@ -104,11 +98,12 @@ public class Project {
         this.deliveryDate = deliveryDate;
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
+    public void verifyProjectValidity(long requestAllocationInSeconds){
+        var tempProjectInSeconds = between(this.getInitialDate(), this.getDeliveryDate()).getSeconds();
+        if(requestAllocationInSeconds > tempProjectInSeconds){
+            throw new InsufficientWorkHoursException(
+                    "O Projeto esta vigente apenas entre o período: "
+                            + formatInstantDateTime(this.getInitialDate()) + " à " + formatInstantDateTime(this.getDeliveryDate()));
+        }
     }
 }
