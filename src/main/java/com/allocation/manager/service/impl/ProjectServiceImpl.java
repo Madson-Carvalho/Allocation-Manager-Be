@@ -1,6 +1,5 @@
 package com.allocation.manager.service.impl;
 
-import com.allocation.manager.model.Employee;
 import com.allocation.manager.model.Project;
 import com.allocation.manager.repository.ProjectRepository;
 import com.allocation.manager.service.IProjectService;
@@ -12,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class ProjectService implements IProjectService {
+public class ProjectServiceImpl implements IProjectService {
     @Autowired
     private ProjectRepository repository;
 

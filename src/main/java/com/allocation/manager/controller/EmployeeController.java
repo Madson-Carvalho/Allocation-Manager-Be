@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/employees")
-class EmployeeController {
+public class EmployeeController {
     @Autowired
     private IEmployeeService service;
 

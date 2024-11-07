@@ -20,7 +20,7 @@ import static com.allocation.manager.util.ValidationUtil.checkNotNullOrThrowEnti
 import static java.time.Duration.between;
 
 @Service
-public class AllocationService implements IAllocationService {
+public class AllocationServiceImpl implements IAllocationService {
 
     @Autowired
     private ProjectEmployeeRepository projectEmployeeRepository;
