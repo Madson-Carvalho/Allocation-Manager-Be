@@ -1,11 +1,10 @@
 package com.allocation.manager.model;
 
+import com.allocation.manager.exceptions.InsufficientWorkHoursException;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,26 +20,21 @@ public class Employee {
     private String name;
     @Column(nullable = false, length = 50)
     private String email;
-    @Column(nullable = false, length = 50)
-    private double workeHours;
+
+    @Column(nullable = false)
+    private long workInSeconds;
+
     @Column(nullable = false, length = 50)
     private String jobRole;
-    @Column()
+    @Column(nullable = false)
     private double wage;
     @Column(length = 50)
     private String qualification;
     @Column(length = 100)
     private String specializations;
 
-    @ManyToMany(mappedBy = "employees")
-    private List<Project> projects = new ArrayList<>();
-
     public UUID getEmployeeId() {
         return employeeId;
-    }
-
-    public void setEmployeeId(UUID employeeId) {
-        this.employeeId = employeeId;
     }
 
     public String getName() {
@@ -59,12 +53,12 @@ public class Employee {
         this.email = email;
     }
 
-    public double getWorkeHours() {
-        return workeHours;
+    public long getWorkInSeconds() {
+        return workInSeconds;
     }
 
-    public void setWorkeHours(double workeHours) {
-        this.workeHours = workeHours;
+    public void setWorkInSeconds(long workeHours) {
+        this.workInSeconds = workeHours;
     }
 
     public String getJobRole() {
@@ -99,11 +93,10 @@ public class Employee {
         this.specializations = specializations;
     }
 
-    public List<Project> getProjects() {
-        return projects;
+    public void verifyHoursDisponible(long requestInSeconds){
+        if(getWorkInSeconds() < requestInSeconds){
+            throw new InsufficientWorkHoursException("O colaborador não contém horas disponíveis suficientes para a nova alocação.");
+        }
     }
 
-    public void setProjects(List<Project> projects) {
-        this.projects = projects;
-    }
 }
