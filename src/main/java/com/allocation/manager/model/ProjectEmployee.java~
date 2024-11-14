@@ -28,6 +28,8 @@ public class ProjectEmployee {
     @Column(nullable = false)
     private Instant endDate;
 
+    public ProjectEmployee() {}
+
     public Project getProject() {
         return project;
     }
