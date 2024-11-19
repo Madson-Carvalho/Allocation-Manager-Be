@@ -20,8 +20,8 @@ public class AllocationController {
     private IAllocationService service;
 
     @PostMapping(Routes.AllocateEmployeeInProject)
-    public ResponseEntity<Void> allocateEmployeeInProject(@PathVariable UUID employeeId, @PathVariable UUID projectId, @PathVariable Instant startDate, @PathVariable Instant endDate) {
-        service.allocateEmployeeInProject(employeeId, projectId, startDate, endDate);
+    public ResponseEntity<Void> allocateEmployeeInProject(@RequestBody ProjectEmployee projectEmployee) {
+        service.allocateEmployeeInProject(projectEmployee);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

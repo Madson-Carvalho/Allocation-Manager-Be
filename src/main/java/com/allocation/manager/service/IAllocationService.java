@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IAllocationService {
-    void allocateEmployeeInProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate);
+    void allocateEmployeeInProject(ProjectEmployee projectEmployee);
 
     List<ProjectEmployee> findAllEmployeeInProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate);
 

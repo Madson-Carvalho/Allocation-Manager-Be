@@ -32,10 +32,15 @@ public class AllocationServiceImpl implements IAllocationService {
     private EmployeeRepository employeeRepository;
 
     @Override
-    public void allocateEmployeeInProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate) {
+    public void allocateEmployeeInProject(ProjectEmployee projectEmployee) {
 
-        if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("A data de início não pode ser posterior à data de término.");
+        var projectId = projectEmployee.getProject().getProjectId();
+        var employeeId = projectEmployee.getEmployee().getEmployeeId();
+        var startDate = projectEmployee.getStartDate();
+        var endDate = projectEmployee.getEndDate();
+
+        if (startDate.isAfter(endDate) || startDate.equals(endDate)) {
+            throw new IllegalArgumentException("As datas fornecidas são inválidas. Verifique os valores e tente novamente.");
         }
 
         verifyIsEmployeeAllocatedToProject(projectId, employeeId, startDate, endDate);
@@ -48,7 +53,6 @@ public class AllocationServiceImpl implements IAllocationService {
         employee.verifyHoursDisponible(requestInSeconds);
         project.verifyProjectValidity(requestInSeconds);
 
-        ProjectEmployee projectEmployee = new ProjectEmployee(project, employee, startDate, endDate);
         projectEmployeeRepository.save(projectEmployee);
 
         employee.setWorkInSeconds(employee.getWorkInSeconds() - requestInSeconds);
