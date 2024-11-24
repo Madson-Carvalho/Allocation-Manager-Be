@@ -22,8 +22,11 @@ public class Project {
 
     @Column(nullable = false, length = 100)
     private String name;
+
     @Column(nullable = false)
     private float projectHours;
+    private long allocatedHours = 0;
+
     @Column(nullable = false)
     private String projectCoordinator;
     @Column(nullable = false)
@@ -56,6 +59,14 @@ public class Project {
 
     public void setProjectHours(float projectHours) {
         this.projectHours = projectHours;
+    }
+
+    public long getAllocatedHours() {
+        return allocatedHours;
+    }
+
+    public void setAllocatedHours(long allocatedHours) {
+        this.allocatedHours = allocatedHours;
     }
 
     public String getProjectCoordinator() {
@@ -99,8 +110,7 @@ public class Project {
     }
 
     public void verifyProjectValidity(long requestAllocationInSeconds){
-        var tempProjectInSeconds = between(this.getInitialDate(), this.getDeliveryDate()).getSeconds();
-        if(requestAllocationInSeconds > tempProjectInSeconds){
+        if(requestAllocationInSeconds > projectHours && allocatedHours + requestAllocationInSeconds > projectHours){
             throw new InsufficientWorkHoursException(
                     "O Projeto esta vigente apenas entre o período: "
                             + formatInstantDateTime(this.getInitialDate()) + " à " + formatInstantDateTime(this.getDeliveryDate()));
