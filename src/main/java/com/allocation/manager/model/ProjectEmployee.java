@@ -28,11 +28,15 @@ public class ProjectEmployee {
     @Column(nullable = false)
     private Instant endDate;
 
-    public ProjectEmployee( Project project,  Employee employee, Instant startDate, Instant endDate) {
+    @Column(nullable = false)
+    private long allocatedHours = 0;
+
+    public ProjectEmployee( Project project,  Employee employee, Instant startDate, Instant endDate, long allocatedHours) {
         this.project = project;
         this.employee = employee;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.allocatedHours = allocatedHours;
     }
 
     public ProjectEmployee() {}
@@ -75,5 +79,13 @@ public class ProjectEmployee {
 
     public void setEndDate(Instant endDate) {
         this.endDate = endDate;
+    }
+
+    public long getAllocatedHours() {
+        return allocatedHours;
+    }
+
+    public void setAllocatedHours(long allocatedHours) {
+        this.allocatedHours = allocatedHours;
     }
 }

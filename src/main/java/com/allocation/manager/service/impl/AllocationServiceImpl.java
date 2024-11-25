@@ -33,30 +33,21 @@ public class AllocationServiceImpl implements IAllocationService {
 
     @Override
     public void allocateEmployeeInProject(ProjectEmployee projectEmployee) {
-
-        var projectId = projectEmployee.getProject().getProjectId();
-        var employeeId = projectEmployee.getEmployee().getEmployeeId();
-        var startDate = projectEmployee.getStartDate();
-        var endDate = projectEmployee.getEndDate();
-
-        if (startDate.isAfter(endDate) || startDate.equals(endDate)) {
+        if (projectEmployee.getStartDate().isAfter(projectEmployee.getEndDate()) || projectEmployee.getStartDate().equals(projectEmployee.getEndDate())) {
             throw new IllegalArgumentException("As datas fornecidas são inválidas. Verifique os valores e tente novamente.");
         }
 
-        verifyIsEmployeeAllocatedToProject(projectId, employeeId, startDate, endDate);
+        verifyIsEmployeeAllocatedToProject(projectEmployee);
 
-        var project = checkNotNullOrThrowEntityNotFound(projectRepository.findByUuid(projectId), "Projeto não encontrado com o ID: " + projectId);
-        var employee = checkNotNullOrThrowEntityNotFound(employeeRepository.findByUuid(employeeId), "Colaborador não encontrado com o ID: " + employeeId);
-
-        long requestInSeconds = between(startDate, endDate).getSeconds();
-
-        employee.verifyHoursDisponible(requestInSeconds);
-        project.verifyProjectValidity(requestInSeconds);
+        projectEmployee.getEmployee().verifyHoursDisponible(projectEmployee.getAllocatedHours());
+        projectEmployee.getProject().verifyProjectValidity(projectEmployee.getAllocatedHours());
 
         projectEmployeeRepository.save(projectEmployee);
 
-        employee.setWorkInSeconds(employee.getWorkInSeconds() - requestInSeconds);
-        employeeRepository.save(employee);
+        projectEmployee.getEmployee().setAllocatedHours(projectEmployee.getAllocatedHours() + projectEmployee.getEmployee().getAllocatedHours());
+        employeeRepository.save(projectEmployee.getEmployee());
+        projectEmployee.getProject().setAllocatedHours(projectEmployee.getAllocatedHours() + projectEmployee.getEmployee().getAllocatedHours());
+        projectRepository.save(projectEmployee.getProject());
     }
 
     @Override
@@ -79,7 +70,7 @@ public class AllocationServiceImpl implements IAllocationService {
 
             long newRequestInSeconds = between(startDate, endDate).getSeconds();
 
-            verifyIsEmployeeAllocatedToProject(project.getProjectId(), employee.getEmployeeId(), startDate, endDate);
+            verifyIsEmployeeAllocatedToProject(pe);
 
             long currentAllocationInSeconds = between(oldProjectEmployee.getStartDate(), oldProjectEmployee.getEndDate()).getSeconds();
             employee.setWorkInSeconds(employee.getWorkInSeconds() + currentAllocationInSeconds);
@@ -104,13 +95,14 @@ public class AllocationServiceImpl implements IAllocationService {
         projectEmployeeRepository.delete(projectEmployee);
     }
 
-    private void verifyIsEmployeeAllocatedToProject(UUID projectId, UUID employeeId, Instant startDate, Instant endDate) {
-        var allocation = projectEmployeeRepository.findAllEmployeeInProject(employeeId, null, startDate, endDate)
+    private void verifyIsEmployeeAllocatedToProject(ProjectEmployee projectEmployee) {
+        var allocation = projectEmployeeRepository.findAllEmployeeInProject(projectEmployee.getEmployee().getEmployeeId(), null,
+                        projectEmployee.getStartDate(), projectEmployee.getEndDate())
                 .stream()
                 .findFirst()
                 .orElse(null);
 
-        if (allocation != null && !allocation.getProject().getProjectId().equals(projectId))
+        if (allocation != null && !allocation.getProject().getProjectId().equals(projectEmployee.getProject().getProjectId()))
             throw new EmployeeAllocatedException("O funcionário já está alocado no projeto "
                     + allocation.getProject().getName() + " durante o período de: "
                     + formatInstantDateTime(allocation.getStartDate()) + " à " + formatInstantDateTime(allocation.getEndDate()));

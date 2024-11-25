@@ -24,6 +24,8 @@ public class Employee {
     @Column(nullable = false)
     private long workInSeconds;
 
+    private long allocatedHours = 0;
+
     @Column(nullable = false, length = 50)
     private String jobRole;
     @Column(nullable = false)
@@ -93,8 +95,16 @@ public class Employee {
         this.specializations = specializations;
     }
 
+    public long getAllocatedHours() {
+        return allocatedHours;
+    }
+
+    public void setAllocatedHours(long allocatedHours) {
+        this.allocatedHours = allocatedHours;
+    }
+
     public void verifyHoursDisponible(long requestInSeconds){
-        if(getWorkInSeconds() < requestInSeconds){
+        if(getWorkInSeconds() < requestInSeconds && getAllocatedHours() + requestInSeconds > getWorkInSeconds()){
             throw new InsufficientWorkHoursException("O colaborador não contém horas disponíveis suficientes para a nova alocação.");
         }
     }

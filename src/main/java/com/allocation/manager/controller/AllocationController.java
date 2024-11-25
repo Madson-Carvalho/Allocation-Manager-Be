@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/allocation")
+@RequestMapping("api/v1/allocations")
 public class AllocationController {
     @Autowired
     private IAllocationService service;
