@@ -11,6 +11,8 @@ public interface IAllocationService {
 
     List<ProjectEmployee> findAllEmployeeInProject(UUID employeeId, UUID projectId, Instant startDate, Instant endDate);
 
+    List<ProjectEmployee> findAllProjectsByEmployeeId(UUID employeeId);
+
     void updateAllocationsEmployeesInProjects(List<ProjectEmployee> projectsEmployees);
 
     void deleteProjectEmployee(ProjectEmployee projectEmployee);
