@@ -4,6 +4,7 @@ import com.allocation.manager.model.Project;
 import com.allocation.manager.model.ProjectEmployee;
 import com.allocation.manager.repository.ProjectRepository;
 import com.allocation.manager.service.IProjectService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,10 @@ public class ProjectServiceImpl implements IProjectService {
 
     @Override
     public void deleteProject(UUID projectId) {
+
+        if(!repository.existsById(projectId)){
+            throw new EntityNotFoundException("Nenhum projeto foi encontrado com o ID fornecido: " + projectId);
+        }
 
         var allocations = allocationService.findAllEmployeeInProject(null, projectId, null, null);
 

@@ -4,6 +4,7 @@ import com.allocation.manager.model.Employee;
 import com.allocation.manager.model.ProjectEmployee;
 import com.allocation.manager.repository.EmployeeRepository;
 import com.allocation.manager.service.IEmployeeService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,10 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     @Override
     public void deleteEmployee(UUID employeeId) {
+
+        if(!employeeRepository.existsById(employeeId)){
+            throw new EntityNotFoundException("Nenhum colaborador foi encontrado com o ID fornecido: " + employeeId);
+        }
 
         var allocations = allocationService.findAllEmployeeInProject(employeeId, null, null, null);
 
