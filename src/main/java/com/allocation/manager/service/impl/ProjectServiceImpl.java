@@ -1,6 +1,7 @@
 package com.allocation.manager.service.impl;
 
 import com.allocation.manager.model.Project;
+import com.allocation.manager.model.ProjectEmployee;
 import com.allocation.manager.repository.ProjectRepository;
 import com.allocation.manager.service.IProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ import java.util.UUID;
 public class ProjectServiceImpl implements IProjectService {
     @Autowired
     private ProjectRepository repository;
+
+    @Autowired
+    private AllocationServiceImpl allocationService;
 
     @Override
     public Project createProject(Project project) {
@@ -36,8 +40,15 @@ public class ProjectServiceImpl implements IProjectService {
     }
 
     @Override
-    public void deleteProject(UUID id) {
-        repository.deleteById(id);
+    public void deleteProject(UUID projectId) {
+
+        var allocations = allocationService.findAllEmployeeInProject(null, projectId, null, null);
+
+        for (ProjectEmployee allocation : allocations) {
+            allocationService.deleteProjectEmployee(allocation);
+        }
+
+        repository.deleteById(projectId);
     }
 
     @Override
