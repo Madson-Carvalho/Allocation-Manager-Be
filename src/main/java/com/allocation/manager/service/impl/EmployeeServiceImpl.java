@@ -43,6 +43,13 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     @Override
     public void deleteEmployee(UUID employeeId) {
+
+        var allocations = allocationService.findAllEmployeeInProject(employeeId, null, null, null);
+
+        for (ProjectEmployee allocation : allocations) {
+            allocationService.deleteProjectEmployee(allocation);
+        }
+
         employeeRepository.deleteById(employeeId);
     }
 
