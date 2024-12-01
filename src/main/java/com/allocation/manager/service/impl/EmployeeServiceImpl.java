@@ -52,7 +52,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
         var allocations = allocationService.findAllEmployeeInProject(employeeId, null, null, null);
 
         for (ProjectEmployee allocation : allocations) {
-            allocationService.deleteProjectEmployee(allocation);
+            allocationService.deleteProjectEmployee(allocation.getId());
         }
 
         employeeRepository.deleteById(employeeId);

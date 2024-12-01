@@ -43,8 +43,8 @@ public class AllocationController {
     }
 
     @DeleteMapping(Routes.DeallocateEmployeeTheProject)
-    public ResponseEntity<Void> DeallocateEmployeeTheProject(@RequestBody ProjectEmployee projectEmployee) {
-        service.deleteProjectEmployee(projectEmployee);
+    public ResponseEntity<Void> DeallocateEmployeeTheProject(@PathVariable UUID id) {
+            service.deleteProjectEmployee(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 

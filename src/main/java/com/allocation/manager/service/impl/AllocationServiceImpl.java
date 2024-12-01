@@ -8,6 +8,7 @@ import com.allocation.manager.repository.EmployeeRepository;
 import com.allocation.manager.repository.ProjectEmployeeRepository;
 import com.allocation.manager.repository.ProjectRepository;
 import com.allocation.manager.service.IAllocationService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,8 @@ public class AllocationServiceImpl implements IAllocationService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Override
     public void allocateEmployeeInProject(ProjectEmployee projectEmployee) {
@@ -89,7 +92,10 @@ public class AllocationServiceImpl implements IAllocationService {
     }
 
     @Override
-    public void deleteProjectEmployee(ProjectEmployee projectEmployee) {
+    public void deleteProjectEmployee(UUID projectEmployeeId) {
+        var projectEmployee = projectEmployeeRepository.findById(projectEmployeeId)
+                .orElseThrow(() -> new EntityNotFoundException("Nenhum colaborador foi encontrado com o ID fornecido: " + projectEmployeeId));
+
         resetEmployeeWorkingHours(projectEmployee);
         projectEmployeeRepository.delete(projectEmployee);
     }
