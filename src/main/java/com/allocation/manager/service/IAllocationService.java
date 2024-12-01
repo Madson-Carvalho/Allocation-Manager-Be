@@ -13,5 +13,5 @@ public interface IAllocationService {
 
     void updateAllocationsEmployeesInProjects(List<ProjectEmployee> projectsEmployees);
 
-    void deleteProjectEmployee(ProjectEmployee projectEmployee);
+    void deleteProjectEmployee(UUID projectEmployeeId);
 }

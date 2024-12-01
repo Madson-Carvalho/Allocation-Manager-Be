@@ -50,7 +50,7 @@ public class ProjectServiceImpl implements IProjectService {
         var allocations = allocationService.findAllEmployeeInProject(null, projectId, null, null);
 
         for (ProjectEmployee allocation : allocations) {
-            allocationService.deleteProjectEmployee(allocation);
+            allocationService.deleteProjectEmployee(allocation.getId());
         }
 
         repository.deleteById(projectId);
