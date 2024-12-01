@@ -24,4 +24,7 @@ public interface ProjectEmployeeRepository extends JpaRepository<ProjectEmployee
 
     @Query("SELECT pe.project FROM ProjectEmployee pe WHERE pe.employee.employeeId = :employeeId")
     List<ProjectEmployee> findAllProjectsByEmployeeId(UUID employeeId);
+
+    @Query("SELECT pe FROM ProjectEmployee pe WHERE pe.employee.employeeId = :employeeId AND (pe.startDate <= :endDate AND pe.endDate >= :startDate)")
+    List<ProjectEmployee> findOverlappingAllocations(@Param("employeeId") UUID employeeId, @Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
 }
