@@ -1,6 +1,8 @@
 package com.allocation.manager.unit;
 
 import com.allocation.manager.exceptions.InsufficientWorkHoursException;
+import com.allocation.manager.model.Employee;
+import com.allocation.manager.model.Project;
 import com.allocation.manager.model.ProjectEmployee;
 import com.allocation.manager.service.impl.AllocationServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,38 +48,43 @@ class AllocationServiceImplTest extends BaseUnitTest{
         verify(projectRepository, times(1)).save(projectEmployee.getProject());
     }
 
-    //region update testes
-//    @Test
-//    public void testUpdateAllocationsEmployeesInProjects_HappyPath() {
-//        ProjectEmployee projectEmployee = createProjectEmployee();
-//        projectEmployee.setStartDate(Instant.now().plus(1, ChronoUnit.DAYS));
-//        projectEmployee.setEndDate(Instant.now().plus(10, ChronoUnit.DAYS));
-//        List<ProjectEmployee> projectsEmployees = List.of(projectEmployee);
-//
-//        ProjectEmployee oldProjectEmployee = new ProjectEmployee();
-//        oldProjectEmployee.setStartDate(Instant.now().minus(1, ChronoUnit.DAYS));
-//        oldProjectEmployee.setEndDate(Instant.now().plus(5, ChronoUnit.DAYS));
-//        oldProjectEmployee.setEmployee(projectEmployee.getEmployee());
-//        oldProjectEmployee.setProject(projectEmployee.getProject());
-//
-//        when(projectEmployeeRepository.findByEmployeeIdAndProjectId(projectEmployee.getEmployee().getEmployeeId(), projectEmployee.getProject().getProjectId()))
-//                .thenReturn(oldProjectEmployee);
-//
-//        doNothing().when(projectEmployee.getEmployee()).verifyHoursDisponible(anyLong());
-//
-//        allocationService.updateAllocationsEmployeesInProjects(projectsEmployees);
-//
-//        verify(projectEmployeeRepository, times(1)).saveAll(projectsEmployees);
-//        verify(employeeRepository, times(1)).saveAll(anyList());
-//
-//        verify(projectEmployee.getEmployee(), times(1)).setWorkInSeconds(anyLong());
-//    }
+    @Test
+    public void testUpdateAllocationsEmployeesInProjects_HappyPath() {
+        Employee employeeMock = mock(Employee.class);
+        Project projectMock = mock(Project.class);
+        ProjectEmployee projectEmployee = new ProjectEmployee();
+
+        projectEmployee.setEmployee(employeeMock);
+        projectEmployee.setProject(projectMock);
+        projectEmployee.setStartDate(Instant.now().plus(1, ChronoUnit.DAYS));
+        projectEmployee.setEndDate(Instant.now().plus(10, ChronoUnit.DAYS));
+        List<ProjectEmployee> projectsEmployees = List.of(projectEmployee);
+
+        ProjectEmployee oldProjectEmployee = new ProjectEmployee();
+        oldProjectEmployee.setEmployee(employeeMock);
+        oldProjectEmployee.setProject(projectMock);
+        oldProjectEmployee.setStartDate(Instant.now().minus(1, ChronoUnit.DAYS));
+        oldProjectEmployee.setEndDate(Instant.now().plus(5, ChronoUnit.DAYS));
+
+        when(projectEmployeeRepository.findByEmployeeIdAndProjectId(
+                employeeMock.getEmployeeId(), projectMock.getProjectId())
+        ).thenReturn(oldProjectEmployee);
+
+        doNothing().when(employeeMock).verifyHoursDisponible(anyLong());
+
+        allocationService.updateAllocationsEmployeesInProjects(projectsEmployees);
+
+        verify(projectEmployeeRepository, times(1)).saveAll(projectsEmployees);
+        verify(employeeRepository, times(1)).saveAll(anyList());
+        verify(employeeMock, times(1)).setWorkInSeconds(anyLong());
+    }
+
 
     @Test
     public void testUpdateAllocationsEmployeesInProjects_InvalidStartDate() {
         ProjectEmployee projectEmployee = createProjectEmployee();
-        projectEmployee.setStartDate(Instant.now().plus(10, ChronoUnit.DAYS)); // Data de início após a data de término
-        projectEmployee.setEndDate(Instant.now().plus(5, ChronoUnit.DAYS));  // Data de término antes da data de início
+        projectEmployee.setStartDate(Instant.now().plus(10, ChronoUnit.DAYS));
+        projectEmployee.setEndDate(Instant.now().plus(5, ChronoUnit.DAYS));
         List<ProjectEmployee> projectsEmployees = List.of(projectEmployee);
 
         try {
@@ -110,37 +117,40 @@ class AllocationServiceImplTest extends BaseUnitTest{
         verify(employeeRepository, times(0)).saveAll(anyList());
     }
 
-//    @Test
-//    public void testUpdateAllocationsEmployeesInProjects_InsufficientHours() {
-//        Employee mockedEmployee = mock(Employee.class);
-//
-//        ProjectEmployee projectEmployee = createProjectEmployee();
-//        projectEmployee.setEmployee(mockedEmployee); // Set the mocked employee
-//
-//        projectEmployee.setStartDate(Instant.now().plus(1, ChronoUnit.DAYS));
-//        projectEmployee.setEndDate(Instant.now().plus(10, ChronoUnit.DAYS));
-//        List<ProjectEmployee> projectsEmployees = List.of(projectEmployee);
-//
-//        ProjectEmployee oldProjectEmployee = new ProjectEmployee();
-//        oldProjectEmployee.setStartDate(Instant.now().minus(1, ChronoUnit.DAYS));
-//        oldProjectEmployee.setEndDate(Instant.now().plus(5, ChronoUnit.DAYS));
-//        oldProjectEmployee.setEmployee(projectEmployee.getEmployee());
-//        oldProjectEmployee.setProject(projectEmployee.getProject());
-//
-//        when(projectEmployeeRepository.findByEmployeeIdAndProjectId(
-//                projectEmployee.getEmployee().getEmployeeId(),
-//                projectEmployee.getProject().getProjectId()))
-//                .thenReturn(oldProjectEmployee);
-//
-//        doThrow(new IllegalArgumentException("O colaborador não contém horas disponíveis suficientes para a nova alocação.")).when(allocationService).updateAllocationsEmployeesInProjects(projectsEmployees);
-//
-//        verify(projectEmployeeRepository, times(0)).saveAll(projectsEmployees);
-//        verify(employeeRepository, times(0)).saveAll(anyList());
-//    }
+    @Test
+    public void testUpdateAllocationsEmployeesInProjects_InsufficientHours() {
+        Employee mockedEmployee = mock(Employee.class);
 
-    //endregion update testes
+        ProjectEmployee projectEmployee = createProjectEmployee();
+        projectEmployee.setEmployee(mockedEmployee);
+        projectEmployee.setStartDate(Instant.now().plus(1, ChronoUnit.DAYS));
+        projectEmployee.setEndDate(Instant.now().plus(10, ChronoUnit.DAYS));
+        List<ProjectEmployee> projectsEmployees = List.of(projectEmployee);
 
-    //region Test Exception
+        ProjectEmployee oldProjectEmployee = new ProjectEmployee();
+        oldProjectEmployee.setStartDate(Instant.now().minus(1, ChronoUnit.DAYS));
+        oldProjectEmployee.setEndDate(Instant.now().plus(5, ChronoUnit.DAYS));
+        oldProjectEmployee.setEmployee(mockedEmployee);
+        oldProjectEmployee.setProject(projectEmployee.getProject());
+
+        when(projectEmployeeRepository.findByEmployeeIdAndProjectId(
+                mockedEmployee.getEmployeeId(),
+                projectEmployee.getProject().getProjectId()
+        )).thenReturn(oldProjectEmployee);
+
+        doThrow(new InsufficientWorkHoursException("O colaborador não contém horas disponíveis suficientes para a nova alocação."))
+                .when(mockedEmployee).verifyHoursDisponible(anyLong());
+
+        Exception exception = assertThrows(InsufficientWorkHoursException.class, () -> {
+            allocationService.updateAllocationsEmployeesInProjects(projectsEmployees);
+        });
+
+        assertEquals("O colaborador não contém horas disponíveis suficientes para a nova alocação.", exception.getMessage());
+
+        verify(projectEmployeeRepository, times(0)).saveAll(projectsEmployees);
+        verify(employeeRepository, times(0)).saveAll(anyList());
+    }
+
     @Test
     void testAllocateEmployeeInProject_InvalidDate() {
         ProjectEmployee projectEmployee = new ProjectEmployee();
@@ -170,5 +180,4 @@ class AllocationServiceImplTest extends BaseUnitTest{
         verify(employeeRepository, times(0)).save(projectEmployee.getEmployee());
         verify(projectRepository, times(0)).save(projectEmployee.getProject());
     }
-    //endregion Test Exception
 }

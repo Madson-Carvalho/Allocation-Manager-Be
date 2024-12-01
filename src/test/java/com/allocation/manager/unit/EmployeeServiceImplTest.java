@@ -6,6 +6,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class EmployeeServiceImplTest extends BaseUnitTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         employee = createEmployee();
         employeeId = employee.getEmployeeId();
     }

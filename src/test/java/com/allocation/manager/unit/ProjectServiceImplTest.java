@@ -1,11 +1,13 @@
 package com.allocation.manager.unit;
 
+import com.allocation.manager.model.Employee;
 import com.allocation.manager.model.Project;
 import com.allocation.manager.service.impl.ProjectServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +27,7 @@ class ProjectServiceImplTest extends BaseUnitTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         project = createProject();
         projectId = project.getProjectId();
     }

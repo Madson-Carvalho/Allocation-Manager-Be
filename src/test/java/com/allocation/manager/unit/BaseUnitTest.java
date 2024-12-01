@@ -26,7 +26,6 @@ public abstract class BaseUnitTest {
 
     protected Project createProject() {
         Project project = new Project();
-        project.setProjectId(UUID.randomUUID());
         project.setName("Web Application Development");
         project.setTotalProjectValue(30000);
         project.setProjectCoordinator("John Doe");
