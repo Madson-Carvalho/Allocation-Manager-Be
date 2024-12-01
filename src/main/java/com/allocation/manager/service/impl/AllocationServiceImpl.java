@@ -1,6 +1,7 @@
 package com.allocation.manager.service.impl;
 
 import com.allocation.manager.exceptions.EmployeeAllocatedException;
+import com.allocation.manager.exceptions.InsufficientWorkHoursException;
 import com.allocation.manager.model.Employee;
 import com.allocation.manager.model.ProjectEmployee;
 import com.allocation.manager.repository.EmployeeRepository;
@@ -33,21 +34,17 @@ public class AllocationServiceImpl implements IAllocationService {
 
     @Override
     public void allocateEmployeeInProject(ProjectEmployee projectEmployee) {
-        if (projectEmployee.getStartDate().isAfter(projectEmployee.getEndDate()) || projectEmployee.getStartDate().equals(projectEmployee.getEndDate())) {
-            throw new IllegalArgumentException("As datas fornecidas são inválidas. Verifique os valores e tente novamente.");
-        }
+        UUID employeeId = projectEmployee.getEmployee().getEmployeeId();
+        Instant startDate = projectEmployee.getStartDate();
+        Instant endDate = projectEmployee.getEndDate();
+        long requestedHoursPerDay = projectEmployee.getAllocatedHours();
 
-        verifyIsEmployeeAllocatedToProject(projectEmployee);
+        List<ProjectEmployee> overlappingAllocations = projectEmployeeRepository.findOverlappingAllocations(employeeId, startDate, endDate);
 
-        projectEmployee.getEmployee().verifyHoursDisponible(projectEmployee.getAllocatedHours());
-        projectEmployee.getProject().verifyProjectValidity(projectEmployee.getAllocatedHours());
+        long dailyWorkHours = projectEmployee.getEmployee().getWorkInSeconds(); // Agora é horas, não segundos
+        validateDailyHoursAvailability(overlappingAllocations, startDate, endDate, requestedHoursPerDay, dailyWorkHours);
 
         projectEmployeeRepository.save(projectEmployee);
-
-        projectEmployee.getEmployee().setAllocatedHours(projectEmployee.getAllocatedHours() + projectEmployee.getEmployee().getAllocatedHours());
-        employeeRepository.save(projectEmployee.getEmployee());
-        projectEmployee.getProject().setAllocatedHours(projectEmployee.getAllocatedHours() + projectEmployee.getEmployee().getAllocatedHours());
-        projectRepository.save(projectEmployee.getProject());
     }
 
     @Override
@@ -122,5 +119,27 @@ public class AllocationServiceImpl implements IAllocationService {
 
         employee.setWorkInSeconds(employee.getWorkInSeconds() + requestInSeconds);
         employeeRepository.save(employee);
+    }
+
+    private void validateDailyHoursAvailability(List<ProjectEmployee> allocations, Instant startDate, Instant endDate, long requestedHoursPerDay, long dailyWorkHours) {
+        Instant current = startDate;
+        while (!current.isAfter(endDate)) {
+            final Instant finalCurrent = current;
+
+            long allocatedHoursOnDay = allocations.stream()
+                    .filter(a -> !a.getStartDate().isAfter(finalCurrent) && !a.getEndDate().isBefore(finalCurrent))
+                    .mapToLong(ProjectEmployee::getAllocatedHours)
+                    .sum();
+
+            if (allocatedHoursOnDay + requestedHoursPerDay > dailyWorkHours) {
+                throw new InsufficientWorkHoursException(
+                        "Horas insuficientes para o dia: " + finalCurrent +
+                                ". Alocado: " + allocatedHoursOnDay + " horas, Solicitado: " + requestedHoursPerDay +
+                                ", Disponível: " + (dailyWorkHours - allocatedHoursOnDay) + " horas."
+                );
+            }
+
+            current = current.plusSeconds(86400);
+        }
     }
 }
