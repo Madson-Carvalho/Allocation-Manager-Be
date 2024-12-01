@@ -35,6 +35,8 @@ public class Employee {
     @Column(length = 100)
     private String specializations;
 
+    private long allocatedProjects;
+
     public UUID getEmployeeId() {
         return employeeId;
     }
@@ -101,6 +103,14 @@ public class Employee {
 
     public void setAllocatedHours(long allocatedHours) {
         this.allocatedHours = allocatedHours;
+    }
+
+    public void setCountAllocatedProjects(long countAllocatedProjects){
+        this.allocatedProjects = countAllocatedProjects;
+    }
+
+    public long getCountAllocatedProjects(){
+        return allocatedProjects;
     }
 
     public void verifyHoursDisponible(long requestInSeconds){

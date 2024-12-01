@@ -87,11 +87,6 @@ public class AllocationServiceImpl implements IAllocationService {
     }
 
     @Override
-    public List<ProjectEmployee> findAllProjectsByEmployeeId(UUID employeeId) {
-        return projectEmployeeRepository.findAllProjectsByEmployeeId(employeeId);
-    }
-
-    @Override
     public void deleteProjectEmployee(ProjectEmployee projectEmployee) {
         resetEmployeeWorkingHours(projectEmployee);
         projectEmployeeRepository.delete(projectEmployee);

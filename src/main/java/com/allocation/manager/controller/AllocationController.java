@@ -30,11 +30,6 @@ public class AllocationController {
         return ResponseEntity.ok(service.findAllEmployeeInProject(employeeId, projectId, startDate, endDate));
     }
 
-    @GetMapping(Routes.FindAllProjectsInEmployee)
-    public ResponseEntity<List<ProjectEmployee>> findAllProjectsByEmployeeId(@RequestParam(required = false) UUID employeeId) {
-        return ResponseEntity.ok(service.findAllProjectsByEmployeeId(employeeId));
-    }
-
     @PutMapping(Routes.UpdateAllocationsEmployeesWithProjects)
     public ResponseEntity<Void> updateAllocationsEmployeesInProjects(@RequestBody List<ProjectEmployee> projectsEmployees) {
         service.updateAllocationsEmployeesInProjects(projectsEmployees);
