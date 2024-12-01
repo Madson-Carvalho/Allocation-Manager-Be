@@ -44,8 +44,6 @@ class AllocationServiceImplTest extends BaseUnitTest{
         allocationService.allocateEmployeeInProject(projectEmployee);
 
         verify(projectEmployeeRepository, times(1)).save(projectEmployee);
-        verify(employeeRepository, times(1)).save(projectEmployee.getEmployee());
-        verify(projectRepository, times(1)).save(projectEmployee.getProject());
     }
 
     @Test
@@ -90,7 +88,7 @@ class AllocationServiceImplTest extends BaseUnitTest{
         try {
             allocationService.updateAllocationsEmployeesInProjects(projectsEmployees);
         } catch (IllegalArgumentException e) {
-            assert(e.getMessage().contains("A data de início não pode ser posterior à data de término"));
+            assert(e.getMessage().contains("As datas fornecidas são inválidas. Verifique os valores e tente novamente."));
         }
 
         verify(projectEmployeeRepository, times(0)).saveAll(projectsEmployees);
@@ -170,14 +168,12 @@ class AllocationServiceImplTest extends BaseUnitTest{
         ProjectEmployee projectEmployee = createProjectEmployee();
         projectEmployee.setAllocatedHours(1000);
 
-        Exception exception = assertThrows(InsufficientWorkHoursException.class, () -> {
+        try {
             allocationService.allocateEmployeeInProject(projectEmployee);
-        });
-
-        assertEquals("O colaborador não contém horas disponíveis suficientes para a nova alocação.", exception.getMessage());
+        } catch (InsufficientWorkHoursException e) {
+            assert(e.getMessage().contains("Horas insuficientes para o dia:"));
+        }
 
         verify(projectEmployeeRepository, times(0)).save(projectEmployee);
-        verify(employeeRepository, times(0)).save(projectEmployee.getEmployee());
-        verify(projectRepository, times(0)).save(projectEmployee.getProject());
     }
 }

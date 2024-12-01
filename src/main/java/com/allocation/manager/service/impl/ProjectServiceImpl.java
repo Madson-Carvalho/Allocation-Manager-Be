@@ -1,6 +1,7 @@
 package com.allocation.manager.service.impl;
 
 import com.allocation.manager.model.Project;
+import com.allocation.manager.model.ProjectEmployee;
 import com.allocation.manager.repository.ProjectRepository;
 import com.allocation.manager.service.IProjectService;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,6 +16,9 @@ import java.util.UUID;
 public class ProjectServiceImpl implements IProjectService {
     @Autowired
     private ProjectRepository repository;
+
+    @Autowired
+    private AllocationServiceImpl allocationService;
 
     @Override
     public Project createProject(Project project) {
@@ -37,11 +41,19 @@ public class ProjectServiceImpl implements IProjectService {
     }
 
     @Override
-    public void deleteProject(UUID id) {
-        if(!repository.existsById(id)){
-            throw new EntityNotFoundException("Nenhum projeto foi encontrado com o ID fornecido: " + id);
+    public void deleteProject(UUID projectId) {
+
+        if(!repository.existsById(projectId)){
+            throw new EntityNotFoundException("Nenhum projeto foi encontrado com o ID fornecido: " + projectId);
         }
-        repository.deleteById(id);
+
+        var allocations = allocationService.findAllEmployeeInProject(null, projectId, null, null);
+
+        for (ProjectEmployee allocation : allocations) {
+            allocationService.deleteProjectEmployee(allocation);
+        }
+
+        repository.deleteById(projectId);
     }
 
     @Override

@@ -1,11 +1,13 @@
 package com.allocation.manager.unit;
 
 import com.allocation.manager.model.Employee;
+import com.allocation.manager.service.impl.AllocationServiceImpl;
 import com.allocation.manager.service.impl.EmployeeServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
@@ -19,6 +21,9 @@ public class EmployeeServiceImplTest extends BaseUnitTest {
 
     @InjectMocks
     private EmployeeServiceImpl employeeService;
+
+    @Mock
+    private AllocationServiceImpl allocationService;
 
     private Employee employee;
     private UUID employeeId;
@@ -72,9 +77,9 @@ public class EmployeeServiceImplTest extends BaseUnitTest {
     @Test
     void testDeleteEmployee() {
         when(employeeRepository.existsById(employeeId)).thenReturn(true);
-
         employeeService.deleteEmployee(employeeId);
 
+        verify(allocationService, times(1)).findAllEmployeeInProject(employeeId, null, null, null);
         verify(employeeRepository, times(1)).deleteById(employeeId);
     }
 

@@ -6,7 +6,6 @@ public class Routes {
     public static final String AllocateEmployeeInProject = "/allocate-employee-the-project";
     public static final String DeallocateEmployeeTheProject = "/deallocate-employee-the-project";
     public static final String FindAllProjectsEmployees = "/find-all" ;
-    public static final String FindAllProjectsInEmployee = "/find-all-projects-in-employee";
     public static final String UpdateAllocationsEmployeesWithProjects = "/update-allocations-employees-with-projects";
     public static final String UpdateAllocationEmployeeWithProject = "/update-allocation-employee-with-project";
     //endregion
