@@ -61,10 +61,3 @@ Mateus Francisco Kons<br>
 Mayra Kauane da Silva Carvalho<br>
 Rodrigo Teles Dondé<br>
 Yuri Grams Broering
-## Equipe de Desenvolvimento
-Gabriel Monteiro de Souza<br>
-Madson Raynon da Silva Carvalho<br>
-Mateus Francisco Kons<br>
-Mayra Kauane da Silva Carvalho<br>
-Rodrigo Teles Dondé<br>
-Yuri Grams Broering
