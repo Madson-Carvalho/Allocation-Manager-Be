@@ -96,7 +96,6 @@ public class AllocationServiceImpl implements IAllocationService {
         var projectEmployee = projectEmployeeRepository.findById(projectEmployeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Nenhum colaborador foi encontrado com o ID fornecido: " + projectEmployeeId));
 
-        resetEmployeeWorkingHours(projectEmployee);
         projectEmployeeRepository.delete(projectEmployee);
     }
 
@@ -111,17 +110,6 @@ public class AllocationServiceImpl implements IAllocationService {
             throw new EmployeeAllocatedException("O funcionário já está alocado no projeto "
                     + allocation.getProject().getName() + " durante o período de: "
                     + formatInstantDateTime(allocation.getStartDate()) + " à " + formatInstantDateTime(allocation.getEndDate()));
-    }
-
-    private void resetEmployeeWorkingHours(ProjectEmployee projectEmployee) {
-        var startDate = projectEmployee.getStartDate();
-        var endDate = projectEmployee.getEndDate();
-
-        long requestInSeconds = between(startDate, endDate).getSeconds();
-        var employee = projectEmployee.getEmployee();
-
-        employee.setWorkInSeconds(employee.getWorkInSeconds() + requestInSeconds);
-        employeeRepository.save(employee);
     }
 
     private void validateDailyHoursAvailability(List<ProjectEmployee> allocations, Instant startDate, Instant endDate, long requestedHoursPerDay, long dailyWorkHours) {
